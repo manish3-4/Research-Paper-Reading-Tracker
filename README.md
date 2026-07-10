@@ -1,6 +1,6 @@
 # 📚 Research Paper Reading Tracker
 
-A full-stack web application for academics and researchers to organize, track, and analyze their research paper reading progress. Built with React, TypeScript, Node.js, Express, and SQLite.
+A full-stack web application for academics and researchers to organize, track, and analyze their research paper reading progress. Built with React, TypeScript, Node.js, Express, and MongoDB.
 
 ## 🎯 Features
 
@@ -36,55 +36,74 @@ A full-stack web application for academics and researchers to organize, track, a
 
 - **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Recharts, React Hot Toast
 - **Backend:** Node.js, Express, CORS
-- **Database:** SQLite (better-sqlite3)
+- **Database:** MongoDB (Mongoose ODM)
+- **Config:** dotenv for environment variables
 - **Icons:** Lucide React
+- **Deployment:** Vercel (`vercel.json`)
 
 ## 📋 Database Schema
 
-### Research Paper Model
-```javascript
-{
-  id: UUID,
-  title: String (required),
-  firstAuthor: String (required),
-  domain: Enum ['Computer Science', 'Biology', 'Physics', 'Chemistry', 'Mathematics', 'Social Sciences'],
-  readingStage: Enum ['Abstract Read', 'Introduction Done', 'Methodology Done', 'Results Analyzed', 'Fully Read', 'Notes Completed'],
-  citationCount: Integer (default: 0),
-  impactScore: Enum ['High Impact', 'Medium Impact', 'Low Impact', 'Unknown'],
-  dateAdded: ISO Date String,
-  createdAt: Timestamp
-}
-```
+The data model is defined with a Mongoose schema in `backend/database.js`. Each paper document stores:
+
+| Field         | Type   | Constraints                                       |
+|---------------|--------|---------------------------------------------------|
+| `id`          | String | Required, unique, UUID v4 (default generated)     |
+| `title`       | String | Required                                          |
+| `firstAuthor` | String | Required                                          |
+| `domain`      | String | Required, one of `Computer Science`, `Biology`, `Physics`, `Chemistry`, `Mathematics`, `Social Sciences` |
+| `readingStage`| String | Required, one of `Abstract Read`, `Introduction Done`, `Methodology Done`, `Results Analyzed`, `Fully Read`, `Notes Completed` |
+| `citationCount`| Number| Default `0`                                      |
+| `impactScore` | String | Required, one of `High Impact`, `Medium Impact`, `Low Impact`, `Unknown` |
+| `dateAdded`   | String | Required, ISO date string                         |
+| `createdAt`   | String | Default current ISO timestamp                     |
+
+Analytics endpoints use MongoDB aggregation pipelines (`$group`, `$avg`, `$sum`, `$countDocuments`) to compute summaries, funnel, scatter, and stacked-bar data.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Node.js (v16 or higher)
 - npm or yarn
+- A MongoDB instance (local `mongod` or a MongoDB Atlas connection string)
+
+### Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/paper-tracker?retryWrites=true&w=majority
+NODE_ENV=development
+```
+
+- `MONGODB_URI` — MongoDB connection string used by `backend/database.js` via `dotenv`.
+- `NODE_ENV` — set to `production` to also serve the built frontend from `backend/server.js`.
+
+### Install Dependencies
+
+Install both backend and frontend dependencies at once from the project root:
+
+```bash
+npm run install:all
+```
 
 ### Backend Setup
 
-1. Navigate to the backend directory:
+1. Navigate to the backend directory (dependencies already installed above):
 ```bash
 cd backend
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
+2. Start the development server:
 ```bash
 npm start
 ```
 
-The backend will start on **http://localhost:5000**
+The backend will start on **http://localhost:5000** and connect to MongoDB.
 
 You should see:
 ```
 🚀 Server running at http://localhost:5000
-📚 Paper Tracker API ready!
+Connected to MongoDB
 ```
 
 ### Frontend Setup
@@ -94,7 +113,7 @@ You should see:
 cd frontend
 ```
 
-2. Install dependencies:
+2. Install dependencies (if not done via `install:all`):
 ```bash
 npm install
 ```
@@ -108,17 +127,19 @@ The frontend will start on **http://localhost:3000**
 
 4. Open your browser and navigate to **http://localhost:3000**
 
+> **Tip:** From the project root you can run `npm run dev` to start both backend and frontend concurrently using `concurrently`.
+
 ## 📡 API Endpoints
 
 ### Papers
-- `GET /api/papers` - Get all papers
+- `GET /api/papers` - Get all papers (sorted by `dateAdded` descending)
 - `GET /api/papers/:id` - Get single paper
 - `POST /api/papers` - Create new paper
 - `PUT /api/papers/:id` - Update paper
 - `DELETE /api/papers/:id` - Delete paper
 
 ### Analytics
-- `GET /api/analytics/summary` - Get analytics summary
+- `GET /api/analytics/summary` - Get analytics summary (count, stage breakdown, avg citations, completion rate)
 - `GET /api/analytics/funnel` - Get funnel data (reading stages)
 - `GET /api/analytics/scatter` - Get scatter plot data
 - `GET /api/analytics/stacked-bar` - Get stacked bar chart data
@@ -157,9 +178,15 @@ Stacked by: Reading stages
 ## 🔧 Configuration
 
 ### Backend Port
-To change the backend port, edit `backend/server.js`:
-```javascript
-const PORT = 5000; // Change this
+To change the backend port, set the `PORT` environment variable (defaults to `5000`):
+```env
+PORT=5000
+```
+
+### MongoDB Connection
+The connection string is read from `MONGODB_URI` in the root `.env` (loaded via `dotenv` in `backend/database.js`):
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/paper-tracker
 ```
 
 ### Frontend Proxy
@@ -173,14 +200,30 @@ proxy: {
 }
 ```
 
+## 🚢 Deployment (Vercel)
+
+This project is configured for Vercel via `vercel.json`:
+- The backend (`backend/package.json`) is deployed as a serverless Node function.
+- The frontend (`frontend/package.json`) is built with `@vercel/static-build` into `dist`.
+- All `/api/*` and catch-all routes are served by `backend/server.js`.
+
+Set the following environment variables in your Vercel project settings:
+- `MONGODB_URI`
+- `NODE_ENV=production`
+
+In production (`NODE_ENV=production`), `backend/server.js` also serves the built `frontend/dist` assets, so a single deployment hosts both the API and the SPA.
+
 ## 📦 Project Structure
 
 ```
 Assignment/
+├── package.json            # Root scripts (dev, start, build, install:all)
+├── vercel.json             # Vercel deployment config
+├── .env                    # Environment variables (MONGODB_URI, NODE_ENV)
 ├── backend/
 │   ├── package.json
-│   ├── server.js          # Express server
-│   ├── database.js        # SQLite setup
+│   ├── server.js          # Express server (API + serves frontend in prod)
+│   ├── database.js        # MongoDB / Mongoose schema & connection
 │   └── .gitignore
 │
 └── frontend/
@@ -215,10 +258,10 @@ Assignment/
 1. Click the "Paper Library" tab
 2. Click the filters section to expand
 3. Select any combination of:
-   - Reading stages (multi-select)
-   - Research domains (multi-select)
-   - Impact scores (multi-select)
-   - Date ranges (single select)
+    - Reading stages (multi-select)
+    - Research domains (multi-select)
+    - Impact scores (multi-select)
+    - Date ranges (single select)
 4. Table updates in real-time
 5. Click "Clear All Filters" to reset
 
@@ -226,11 +269,11 @@ Assignment/
 1. Click the "Analytics" tab
 2. View summary cards with key metrics
 3. Scroll to see:
-   - Reading stage breakdown
-   - Average citations per domain
-   - Funnel chart (reading progression)
-   - Scatter plot (citations vs impact)
-   - Stacked bar chart (domains by stage)
+    - Reading stage breakdown
+    - Average citations per domain
+    - Funnel chart (reading progression)
+    - Scatter plot (citations vs impact)
+    - Stacked bar chart (domains by stage)
 
 ### Deleting a Paper
 1. In the Paper Library view, find the paper
@@ -258,10 +301,12 @@ curl -X POST http://localhost:5000/api/papers \
 
 ## 🐛 Troubleshooting
 
-### Backend won't start
+### Backend won't start / MongoDB connection error
 - Ensure Node.js is installed: `node --version`
-- Check port 5000 isn't already in use
-- Delete `research_papers.db` and try again
+- Verify the `MONGODB_URI` in the root `.env` is correct and reachable
+- Check that your IP is allow-listed in MongoDB Atlas (if using Atlas)
+- Ensure port 5000 isn't already in use
+- Check the "MongoDB connection error" message printed on startup for details
 
 ### Frontend shows "Backend server is not running"
 - Ensure backend is started on port 5000
