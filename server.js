@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.listen(PORT, () => {
   const url = `http://localhost:${PORT}`;
-  console.log(`\u{1F680} Server running at ${url}`);
+  console.log(`🚀 Server running at ${url}`);
 });
 
 // Serve the built frontend (dist) on every start
@@ -171,7 +171,7 @@ app.get('*', async (req, res) => {
     const html = await readFile(join(frontendDistPath, 'index.html'), 'utf-8');
     res.type('html').send(html);
   } catch (error) {
-    res.status(404).send('Frontend not built. Run the frontend build first.');
+    res.status(404).send('Error in frontend path');
   }
 });
 
