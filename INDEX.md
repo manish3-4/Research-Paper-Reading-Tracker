@@ -33,52 +33,44 @@
 
 ```
 Assignment/
-├── 📁 backend/
-│   ├── server.js              (Express REST API)
-│   ├── database.js            (SQLite setup)
-│   ├── package.json           (Dependencies)
-│   └── research_papers.db     (Database - auto-created)
-│
-├── 📁 frontend/
-│   ├── 📁 src/
-│   │   ├── App.tsx            (Main component)
-│   │   ├── api.ts             (API client)
-│   │   ├── types.ts           (TypeScript types)
-│   │   ├── index.css          (Global styles)
-│   │   ├── main.tsx           (Entry point)
-│   │   └── 📁 components/
-│   │       ├── AddPaper.tsx
-│   │       ├── PaperLibrary.tsx
-│   │       └── AnalyticsDashboard.tsx
-│   │
+├── package.json            # Root scripts (install:all)
+├── vercel.json             # Vercel deployment config
+├── .env                    # Environment variables (MONGODB_URI, NODE_ENV)
+├── server.js               # Express server (API + serves frontend in prod)
+├── database.js             # MongoDB / Mongoose schema & connection
+├── frontend/
+│   ├── package.json
 │   ├── index.html
 │   ├── vite.config.ts
 │   ├── tailwind.config.js
 │   ├── tsconfig.json
-│   └── package.json
-│
-├── 📄 README.md               ← Main documentation
-├── 📄 QUICKSTART.md          ← Start here for setup
-├── 📄 ARCHITECTURE.md        ← Technical details
-├── 📄 FEATURES_CHECKLIST.md  ← What's included
-└── 📄 PROJECT_OVERVIEW.md    ← High-level overview
+│   └── src/
+│       ├── main.tsx
+│       ├── App.tsx
+│       ├── types.ts
+│       ├── api.ts
+│       ├── index.css
+│       └── components/
+│           ├── AddPaper.tsx
+│           ├── PaperLibrary.tsx
+│           └── AnalyticsDashboard.tsx
 ```
 
 ---
 
-## 🚀 QUICK SETUP (3 COMMANDS)
+## 🚀 QUICK SETUP (2 COMMANDS)
 
 ### Terminal 1: Backend
 ```bash
-cd backend
-npm install && npm start
+npm start
 ```
 Running on: http://localhost:5000
 
 ### Terminal 2: Frontend
 ```bash
 cd frontend
-npm install && npm run dev
+npm install
+npm run dev
 ```
 Running on: http://localhost:3000
 
@@ -102,7 +94,7 @@ http://localhost:3000
 
 ### 🔧 I want to modify/extend it
 1. [ARCHITECTURE.md](./ARCHITECTURE.md) - Learn the structure
-2. Explore the code in `frontend/src/` and `backend/`
+2. Explore the code in `frontend/src/` and root `server.js` / `database.js`
 3. Make your changes
 4. Refer to [FEATURES_CHECKLIST.md](./FEATURES_CHECKLIST.md) to verify nothing broke
 
@@ -180,13 +172,13 @@ http://localhost:3000
 **A:** Follow [QUICKSTART.md](./QUICKSTART.md) - just 2 terminal commands!
 
 ### Q: What database is used?
-**A:** SQLite locally. See [README.md](./README.md) for production options.
+**A:** MongoDB (Mongoose). See [README.md](./README.md) for connection details.
 
 ### Q: Can I modify the code?
 **A:** Yes! See [ARCHITECTURE.md](./ARCHITECTURE.md) to understand the structure first.
 
 ### Q: How do I deploy?
-**A:** Backend to Railway/Heroku, Frontend to Vercel/Netlify. See [README.md](./README.md) for details.
+**A:** Configured for Vercel via `vercel.json`. See [README.md](./README.md) for details.
 
 ### Q: What features are included?
 **A:** See [FEATURES_CHECKLIST.md](./FEATURES_CHECKLIST.md) for a complete list.
@@ -209,8 +201,11 @@ http://localhost:3000
 ### Backend
 - **Node.js** - Runtime
 - **Express** - Web framework
-- **SQLite** - Database
+- **Mongoose** - MongoDB ODM
 - **CORS** - Cross-origin support
+
+### Database
+- **MongoDB** - Document database
 
 ### Tools
 - **npm** - Package manager
@@ -223,7 +218,7 @@ http://localhost:3000
 - **Total Lines of Code:** ~2,500+
 - **React Components:** 4 (App, AddPaper, PaperLibrary, AnalyticsDashboard)
 - **API Endpoints:** 12
-- **Database Tables:** 1
+- **Database:** MongoDB (Mongoose)
 - **Documentation Pages:** 5
 - **Features Implemented:** 40+
 - **Setup Time:** ~10 minutes
@@ -235,7 +230,7 @@ http://localhost:3000
 ✅ **Complete Full-Stack Application**
 - Frontend, backend, and database included
 - Ready to run locally out of the box
-- No external services required
+- MongoDB Atlas or local MongoDB supported
 
 ✅ **Type-Safe Throughout**
 - TypeScript frontend and types
@@ -253,6 +248,7 @@ http://localhost:3000
 - Validation
 - Performance optimized
 - Security considered
+- Vercel deployment configured
 
 ✅ **Well Documented**
 - 5 documentation files
@@ -266,7 +262,7 @@ http://localhost:3000
 
 ### 1. Use It (No coding needed)
 ```bash
-cd backend && npm install && npm start
+npm start
 # Open new terminal
 cd frontend && npm install && npm run dev
 # Open http://localhost:3000
@@ -277,13 +273,13 @@ cd frontend && npm install && npm run dev
 Read the documentation to understand:
 - How to build a full-stack React app
 - How to design a REST API
-- How to use SQLite in Node.js
+- How to use MongoDB with Mongoose
 - How to create interactive dashboards
 
 ### 3. Build On It
 - Modify the UI design
 - Add new features (export, search, tagging)
-- Change the database to PostgreSQL
+- Change the database connection
 - Deploy to production
 - Add user authentication
 
@@ -341,5 +337,5 @@ Everything you need is here. Pick a documentation file above and dive in!
 
 **Happy researching! 📚✨**
 
-Last Updated: July 10, 2026
+Last Updated: July 11, 2026
 Status: ✅ Complete & Ready

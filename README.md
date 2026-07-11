@@ -1,6 +1,6 @@
 # 📚 Research Paper Reading Tracker
 
-A full-stack web application for academics and researchers to organize, track, and analyze their research paper reading progress. Built with React, TypeScript, Node.js, Express, and MongoDB.
+A full-stack web application for academics and researchers to organize, track, and analyze their research paper reading progress. Built with React, TypeScript, Node.js, Express, and MongoDB (Mongoose).
 
 ## 🎯 Features
 
@@ -43,7 +43,7 @@ A full-stack web application for academics and researchers to organize, track, a
 
 ## 📋 Database Schema
 
-The data model is defined with a Mongoose schema in `backend/database.js`. Each paper document stores:
+The data model is defined with a Mongoose schema in `database.js`. Each paper document stores:
 
 | Field         | Type   | Constraints                                       |
 |---------------|--------|---------------------------------------------------|
@@ -75,8 +75,8 @@ MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/paper-tracker?retryWrites=
 NODE_ENV=development
 ```
 
-- `MONGODB_URI` — MongoDB connection string used by `backend/database.js` via `dotenv`.
-- `NODE_ENV` — set to `production` to also serve the built frontend from `backend/server.js`.
+- `MONGODB_URI` — MongoDB connection string used by `database.js` via `dotenv`.
+- `NODE_ENV` — set to `production` to also serve the built frontend from `server.js`.
 
 ### Install Dependencies
 
@@ -88,12 +88,7 @@ npm run install:all
 
 ### Backend Setup
 
-1. Navigate to the backend directory (dependencies already installed above):
-```bash
-cd backend
-```
-
-2. Start the development server:
+1. Start the development server:
 ```bash
 npm start
 ```
@@ -126,8 +121,6 @@ npm run dev
 The frontend will start on **http://localhost:3000**
 
 4. Open your browser and navigate to **http://localhost:3000**
-
-> **Tip:** From the project root you can run `npm run dev` to start both backend and frontend concurrently using `concurrently`.
 
 ## 📡 API Endpoints
 
@@ -184,7 +177,7 @@ PORT=5000
 ```
 
 ### MongoDB Connection
-The connection string is read from `MONGODB_URI` in the root `.env` (loaded via `dotenv` in `backend/database.js`):
+The connection string is read from `MONGODB_URI` in the root `.env` (loaded via `dotenv` in `database.js`):
 ```env
 MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/paper-tracker
 ```
@@ -203,46 +196,41 @@ proxy: {
 ## 🚢 Deployment (Vercel)
 
 This project is configured for Vercel via `vercel.json`:
-- The backend (`backend/package.json`) is deployed as a serverless Node function.
-- The frontend (`frontend/package.json`) is built with `@vercel/static-build` into `dist`.
-- All `/api/*` and catch-all routes are served by `backend/server.js`.
+- The backend is deployed as a serverless Node function.
+- The frontend is built with `@vercel/static-build` into `dist`.
+- All `/api/*` and catch-all routes are served by `server.js`.
 
 Set the following environment variables in your Vercel project settings:
 - `MONGODB_URI`
 - `NODE_ENV=production`
 
-In production (`NODE_ENV=production`), `backend/server.js` also serves the built `frontend/dist` assets, so a single deployment hosts both the API and the SPA.
+In production (`NODE_ENV=production`), `server.js` also serves the built `frontend/dist` assets, so a single deployment hosts both the API and the SPA.
 
 ## 📦 Project Structure
 
 ```
 Assignment/
-├── package.json            # Root scripts (dev, start, build, install:all)
+├── package.json            # Root scripts (install:all)
 ├── vercel.json             # Vercel deployment config
 ├── .env                    # Environment variables (MONGODB_URI, NODE_ENV)
-├── backend/
+├── server.js               # Express server (API + serves frontend in prod)
+├── database.js             # MongoDB / Mongoose schema & connection
+├── frontend/
 │   ├── package.json
-│   ├── server.js          # Express server (API + serves frontend in prod)
-│   ├── database.js        # MongoDB / Mongoose schema & connection
-│   └── .gitignore
-│
-└── frontend/
-    ├── package.json
-    ├── index.html
-    ├── vite.config.ts
-    ├── tailwind.config.js
-    ├── tsconfig.json
-    ├── src/
-    │   ├── main.tsx
-    │   ├── App.tsx
-    │   ├── types.ts
-    │   ├── api.ts
-    │   ├── index.css
-    │   └── components/
-    │       ├── AddPaper.tsx
-    │       ├── PaperLibrary.tsx
-    │       └── AnalyticsDashboard.tsx
-    └── .gitignore
+│   ├── index.html
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   └── src/
+│       ├── main.tsx
+│       ├── App.tsx
+│       ├── types.ts
+│       ├── api.ts
+│       ├── index.css
+│       └── components/
+│           ├── AddPaper.tsx
+│           ├── PaperLibrary.tsx
+│           └── AnalyticsDashboard.tsx
 ```
 
 ## 🎯 Usage Guide
@@ -303,7 +291,7 @@ curl -X POST http://localhost:5000/api/papers \
 
 ### Backend won't start / MongoDB connection error
 - Ensure Node.js is installed: `node --version`
-- Verify the `MONGODB_URI` in the root `.env` is correct and reachable
+- Verify the `MONGODB_URI` in `.env` is correct and reachable
 - Check that your IP is allow-listed in MongoDB Atlas (if using Atlas)
 - Ensure port 5000 isn't already in use
 - Check the "MongoDB connection error" message printed on startup for details

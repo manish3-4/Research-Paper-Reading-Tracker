@@ -2,21 +2,26 @@ import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { exec } from 'child_process';
+import { readFile } from 'fs/promises';
 import { connectDatabase, Paper } from './database.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const isProduction = process.env.NODE_ENV === 'production';
-const frontendDistPath = join(__dirname, '..', 'frontend', 'dist');
+const frontendDistPath = join(__dirname,'./frontend/dist');
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 app.listen(PORT, () => {
-  console.log(`\u{1F680} Server running at http://localhost:${PORT}`);
+  const url = `http://localhost:${PORT}`;
+  console.log(`\u{1F680} Server running at ${url}`);
 });
+
+// Serve the built frontend (dist) on every start
+app.use(express.static(frontendDistPath));
 
 //connection database
 await connectDatabase();
@@ -159,10 +164,14 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-if (isProduction) {
-  app.use(express.static(frontendDistPath));
-  app.get('*', (req, res) => {
-    res.sendFile(join(frontendDistPath, 'index.html'));
-  });
-}
+// Serve the SPA entry point for all non-API routes
+app.get('*', async (req, res) => {
+  try {
+    console.log(frontendDistPath);
+    const html = await readFile(join(frontendDistPath, 'index.html'), 'utf-8');
+    res.type('html').send(html);
+  } catch (error) {
+    res.status(404).send('Frontend not built. Run the frontend build first.');
+  }
+});
 

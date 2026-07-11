@@ -1,13 +1,19 @@
 {
-  "name": "paper-tracker",
-  "private": true,
+  "name": "paper-tracker-backend",
+  "version": "1.0.0",
+  "description": "Research Paper Reading Tracker API",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
-    "start": "cd backend && npm start",
-    "build": "cd frontend && npm run build",
-    "install:all": "cd backend && npm install && cd ../frontend && npm install"
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "build": "npm install --prefix frontend && npm install"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "uuid": "^9.0.0"
   }
 }

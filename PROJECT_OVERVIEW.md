@@ -39,36 +39,29 @@ You now have a **complete, production-ready full-stack web application** for tra
 
 ## 📦 What You Get
 
-### Backend (Node.js + Express + SQLite)
+### Backend (Node.js + Express + MongoDB)
 ```
-backend/
-├── server.js           → Express server with 12 REST endpoints
-├── database.js         → SQLite schema and initialization
-├── package.json        → Dependencies (Express, CORS, UUID)
-└── research_papers.db  → Database (created on first run)
+server.js           → Express server with 12 REST endpoints
+database.js         → Mongoose schema & MongoDB connection
+package.json        → Dependencies (Express, CORS, Mongoose, UUID)
 ```
 
 **Key Files:**
 - `server.js` - All API endpoints for CRUD and analytics
-- `database.js` - SQLite table definition with constraints
+- `database.js` - Mongoose schema definition and MongoDB connection
 
 ### Frontend (React + TypeScript + Tailwind)
 ```
-frontend/
-├── src/
-│   ├── App.tsx                    → Main app with routing
-│   ├── main.tsx                   → React entry point
-│   ├── index.css                  → Global styles
-│   ├── types.ts                   → TypeScript interfaces
-│   ├── api.ts                     → API client functions
-│   └── components/
-│       ├── AddPaper.tsx           → Add paper form
-│       ├── PaperLibrary.tsx       → Table with filters
-│       └── AnalyticsDashboard.tsx → Charts & analytics
-├── vite.config.ts
-├── tailwind.config.js
-├── tsconfig.json
-└── index.html
+frontend/src/
+├── App.tsx                    → Main app with routing
+├── main.tsx                   → React entry point
+├── index.css                  → Global styles
+├── types.ts                   → TypeScript interfaces
+├── api.ts                     → API client functions
+└── components/
+    ├── AddPaper.tsx           → Add paper form
+    ├── PaperLibrary.tsx       → Table with filters
+    └── AnalyticsDashboard.tsx → Charts & analytics
 ```
 
 **Key Features:**
@@ -83,8 +76,6 @@ frontend/
 
 ### Terminal 1: Backend
 ```bash
-cd backend
-npm install
 npm start
 ```
 ✅ Runs on http://localhost:5000
@@ -105,7 +96,7 @@ npm run dev
 
 ### 1️⃣ Add Research Paper
 - Clean form with validation
-- All 8 fields included
+- All fields included
 - Auto-reset after submission
 - Toast notifications
 
@@ -135,17 +126,19 @@ npm run dev
 
 ## 📊 Database
 
-### One Main Table: Papers
-```sql
-- id (UUID)
-- title (string)
-- firstAuthor (string)
-- domain (6 choices)
-- readingStage (6 stages)
-- citationCount (0-∞)
-- impactScore (4 choices)
-- dateAdded (ISO date)
-- createdAt (timestamp)
+### MongoDB Collection: papers
+```javascript
+{
+  id: UUID (auto-generated),
+  title: String (required),
+  firstAuthor: String (required),
+  domain: String (required, enum),
+  readingStage: String (required, enum),
+  citationCount: Number (default: 0),
+  impactScore: String (required, enum),
+  dateAdded: String (required, ISO date),
+  createdAt: String (default: current timestamp)
+}
 ```
 
 All fields are validated and type-safe.
@@ -214,11 +207,11 @@ GET /api/health  - Server status
 - Excellent middleware support
 - Easy to deploy
 
-### Why SQLite?
-- Zero-setup database
-- Perfect for local development
-- No server needed
-- Easy migration path to PostgreSQL
+### Why MongoDB?
+- Flexible document schema
+- Great for rapid development
+- Powerful aggregation pipeline for analytics
+- Easy to scale
 
 ### Why Tailwind?
 - Rapid UI development
@@ -243,9 +236,9 @@ theme: {
 ```
 
 ### Change Backend Port
-Edit `backend/server.js`:
-```javascript
-const PORT = 5000; // Change to your port
+Edit `server.js` or set environment variable:
+```bash
+PORT=5001 npm start
 ```
 
 ### Change API URL
@@ -259,22 +252,21 @@ target: 'http://localhost:5000' // Change to your API
 ## 📈 Scalability Path
 
 ### Current Setup (Perfect for local dev)
-- SQLite database
+- MongoDB (local or Atlas)
 - Single server
-- File-based storage
+- Document-based storage
 
 ### When you outgrow it (1-2k papers)
-- Migrate to PostgreSQL
+- MongoDB Atlas managed cluster
 - Add Redis caching
-- Deploy to cloud (Vercel, Heroku)
+- Deploy to cloud (Vercel, Railway)
 - Add authentication
 
 ### For large scale
 - Separate frontend/backend deployment
-- Database optimization (indexes, partitioning)
+- Database optimization (indexes)
 - Load balancing
 - CDN for static files
-- Microservices if needed
 
 ---
 
@@ -282,10 +274,9 @@ target: 'http://localhost:5000' // Change to your API
 
 ### Backend won't start?
 ```bash
-cd backend
-rm research_papers.db
-rm -rf node_modules
-npm install
+# Verify MongoDB is running
+# Check MONGODB_URI in .env
+# Ensure port 5000 isn't in use
 npm start
 ```
 
@@ -314,13 +305,12 @@ See QUICKSTART.md for more troubleshooting.
 
 ```
 Assignment/
-├── backend/                    # REST API server
-│   ├── server.js
-│   ├── database.js
-│   ├── package.json
-│   └── .gitignore
-│
-├── frontend/                   # React SPA
+├── server.js                # Express REST API
+├── database.js              # Mongoose schema & MongoDB connection
+├── package.json             # Root scripts & dependencies
+├── vercel.json              # Vercel deployment config
+├── .env                     # Environment variables
+├── frontend/                # React SPA
 │   ├── src/
 │   │   ├── App.tsx
 │   │   ├── components/
@@ -330,14 +320,14 @@ Assignment/
 │   ├── index.html
 │   ├── vite.config.ts
 │   ├── tailwind.config.js
-│   ├── package.json
-│   └── .gitignore
+│   ├── tsconfig.json
+│   └── package.json
 │
-├── README.md                   # Main documentation
-├── QUICKSTART.md              # Setup guide
-├── ARCHITECTURE.md            # Technical details
-├── FEATURES_CHECKLIST.md      # Complete checklist
-└── PROJECT_OVERVIEW.md        # This file
+├── README.md                # Main documentation
+├── QUICKSTART.md            # Setup guide
+├── ARCHITECTURE.md          # Technical details
+├── FEATURES_CHECKLIST.md    # Complete checklist
+└── PROJECT_OVERVIEW.md      # This file
 ```
 
 ---
@@ -353,12 +343,11 @@ Assignment/
 ### Backend
 - Express: https://expressjs.com
 - Node.js: https://nodejs.org
-- SQLite: https://www.sqlite.org
+- Mongoose: https://mongoosejs.com
+- MongoDB: https://www.mongodb.com
 
 ### Deployment
-- Vercel (Frontend): https://vercel.com
-- Railway (Backend): https://railway.app
-- Render: https://render.com
+- Vercel: https://vercel.com
 
 ---
 
@@ -369,7 +358,7 @@ Assignment/
 - ✅ **Tailwind CSS** - Utility-first styling
 - ✅ **Recharts** - Beautiful data visualizations
 - ✅ **Express.js** - Lightweight backend
-- ✅ **SQLite** - Zero-setup database
+- ✅ **Mongoose** - MongoDB ODM
 - ✅ **Vite** - Lightning-fast builds
 - ✅ **Hot Toast** - Smooth notifications
 - ✅ **Lucide React** - Beautiful icons
@@ -402,6 +391,6 @@ Everything is set up and ready to go. Just follow the QUICKSTART guide and you'l
 
 ---
 
-**Created:** July 10, 2026
+**Created:** July 11, 2026
 **Status:** ✅ Production Ready
 **Version:** 1.0.0

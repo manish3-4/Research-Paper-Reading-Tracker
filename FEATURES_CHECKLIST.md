@@ -139,8 +139,8 @@
   - [x] Express (REST API)
   - [x] CORS (Cross-origin)
 - [x] **Database:**
-  - [x] SQLite (Persistent storage)
-  - [x] better-sqlite3 (Driver)
+  - [x] MongoDB (Document database)
+  - [x] Mongoose (ODM)
   - [x] UUID for IDs
 
 ---
@@ -148,12 +148,13 @@
 ## 🚀 Installation & Deployment ✅
 
 ### Backend Setup ✅
-- [x] package.json with all dependencies
 - [x] server.js with all endpoints
-- [x] database.js with schema
+- [x] database.js with Mongoose schema & connection
+- [x] package.json with all dependencies
 - [x] Proper error handling
 - [x] Input validation
 - [x] UUID generation for papers
+- [x] MongoDB aggregation pipelines for analytics
 
 ### Frontend Setup ✅
 - [x] package.json with all dependencies
@@ -202,7 +203,6 @@
 - [x] Paper lifecycle handling
 - [x] Server status indicator
 - [x] Header with branding
-- [x] Footer with info
 
 ### AddPaper.tsx
 - [x] Form with all required fields
@@ -298,7 +298,6 @@
 - [x] Reading stage enum validation
 - [x] Impact score enum validation
 - [x] Citation count type check
-- [x] SQL injection prevention
 - [x] Error response formatting
 
 ---
@@ -331,10 +330,10 @@
 - [x] Client-side filtering (no extra API calls)
 
 ### Backend
-- [x] Direct SQL queries
-- [x] Prepared statements
-- [x] Indexed primary key
-- [x] Efficient aggregations
+- [x] MongoDB aggregation pipelines
+- [x] Indexed fields for fast queries
+- [x] Efficient parallel queries for analytics
+- [x] Lean document projections where appropriate
 
 ---
 
@@ -345,7 +344,6 @@
 - [x] Consistent code style
 - [x] Proper error handling
 - [x] Input validation
-- [x] Secure database queries
 - [x] Clean component structure
 
 ### Documentation
@@ -363,16 +361,17 @@
 - [x] Configurable ports
 - [x] Proper error handling
 - [x] Health check endpoint
+- [x] Vercel deployment configured
 
 ---
 
 ## 🎯 Project Summary
 
 **Total Lines of Code:** ~2,500+
-**Components:** 3 (App, AddPaper, PaperLibrary, AnalyticsDashboard)
+**Components:** 4 (App, AddPaper, PaperLibrary, AnalyticsDashboard)
 **Features:** 40+
 **API Endpoints:** 12
-**Database Tables:** 1
+**Database:** MongoDB (Mongoose)
 **Test Scenarios:** 30+
 
 **All specifications met and exceeded! ✨**
@@ -384,8 +383,8 @@
 1. Read QUICKSTART.md for immediate setup
 2. Read README.md for comprehensive guide
 3. Read ARCHITECTURE.md for technical details
-4. Install dependencies: `npm install` (both directories)
-5. Start backend: `npm start` (in backend/)
+4. Install dependencies: `npm install` (frontend)
+5. Start backend: `npm start`
 6. Start frontend: `npm run dev` (in frontend/)
 7. Open http://localhost:3000
 8. Begin tracking your research papers!
@@ -394,4 +393,4 @@
 
 **Status: ✅ PRODUCTION READY**
 
-Last Updated: 2026-07-10
+Last Updated: July 11, 2026

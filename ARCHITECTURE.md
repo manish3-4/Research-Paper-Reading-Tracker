@@ -22,9 +22,9 @@ The Research Paper Reading Tracker is a full-stack web application with a clear 
                │ Database Queries
                ▼
 ┌─────────────────────────────────────────────┐
-│    SQLite Database (research_papers.db)    │
-│  - Papers table with all fields            │
-│  - Persistent storage                      │
+│         MongoDB (via Mongoose)              │
+│  - Papers collection                       │
+│  - Aggregation pipelines for analytics     │
 └─────────────────────────────────────────────┘
 ```
 
@@ -118,33 +118,34 @@ frontend/
 ### Technology Stack
 - **Node.js** - JavaScript runtime
 - **Express** - HTTP server framework
-- **better-sqlite3** - SQLite driver
+- **Mongoose** - MongoDB ODM
 - **CORS** - Cross-origin support
-- **uuid** - Generate unique IDs
+- **UUID** - Generate unique IDs
+- **dotenv** - Environment variable management
 
 ### Project Structure
 ```
 backend/
 ├── server.js           # Express app & routes
-├── database.js         # SQLite setup & schema
+├── database.js         # Mongoose schema & connection
 └── package.json
 ```
 
 ### Database Schema
 
-#### Papers Table
-```sql
-CREATE TABLE papers (
-  id TEXT PRIMARY KEY,
-  title TEXT NOT NULL,
-  firstAuthor TEXT NOT NULL,
-  domain TEXT NOT NULL,
-  readingStage TEXT NOT NULL,
-  citationCount INTEGER DEFAULT 0,
-  impactScore TEXT NOT NULL,
-  dateAdded TEXT NOT NULL,
-  createdAt TEXT DEFAULT CURRENT_TIMESTAMP
-);
+#### Papers Collection
+```javascript
+{
+  id: String (UUID, unique, required),
+  title: String (required),
+  firstAuthor: String (required),
+  domain: String (required),
+  readingStage: String (required),
+  citationCount: Number (default: 0),
+  impactScore: String (required),
+  dateAdded: String (required),
+  createdAt: String (default: current timestamp)
+}
 ```
 
 **Constraints:**
@@ -197,7 +198,7 @@ Backend:
   2. Validate all fields
   3. Check domain/stage/score are valid enums
   4. Generate UUID
-  5. Insert into database
+  5. Insert into MongoDB via Mongoose
   6. Return created paper with ID
 
 Frontend: 201 Created
@@ -258,7 +259,7 @@ AddPaper validates form
     ↓
 Call createPaper API
     ↓
-Backend validates & inserts to DB
+Backend validates & inserts to MongoDB
     ↓
 Return created paper with ID
     ↓
@@ -344,12 +345,11 @@ Example: 8 fully read out of 25 total = 32.0%
 - **useMemo filtering:** Caches filtered results
 - **Parallel API calls:** Promise.all for analytics
 - **Client-side filtering:** No backend calls needed
-- **SQLite queries:** Direct, optimized SQL statements
+- **MongoDB aggregation:** Efficient server-side computations
 
 ### Scalability
-- SQLite suitable for ~10k records
-- For larger datasets, migrate to PostgreSQL
-- Add pagination to paper list
+- MongoDB suitable for large datasets
+- For very large datasets, add pagination
 - Implement backend filtering for large datasets
 - Add caching layer (Redis)
 
@@ -360,8 +360,8 @@ Example: 8 fully read out of 25 total = 32.0%
 ### Currently Implemented
 - Input validation on backend
 - Type safety with TypeScript
-- SQL prepared statements (better-sqlite3)
 - CORS configured
+- Environment variables for secrets
 
 ### For Production
 - Add authentication (JWT)
@@ -369,7 +369,6 @@ Example: 8 fully read out of 25 total = 32.0%
 - Use HTTPS
 - Validate/sanitize all inputs
 - Add rate limiting
-- Use environment variables for secrets
 - Add CSRF protection
 
 ---
@@ -397,11 +396,12 @@ Example: 8 fully read out of 25 total = 32.0%
 
 ## Deployment
 
-### Backend Deployment (Heroku, Railway, Render)
+### Backend Deployment (Railway, Render, Heroku)
 ```bash
 # Configure environment
 PORT=5000
 NODE_ENV=production
+MONGODB_URI=your_mongodb_connection_string
 
 # Deploy
 npm install
@@ -417,11 +417,16 @@ npm run build
 # Deploy dist/ folder
 ```
 
+### Vercel Configuration
+This project includes a `vercel.json` that configures:
+- Backend as a serverless Node function
+- Frontend as a static build
+- API routes proxied to backend
+
 ### Database
-- SQLite for development ✅
-- PostgreSQL/MongoDB for production
-- Setup database migrations
-- Regular backups
+- MongoDB (local or Atlas) ✅
+- Connection string in `.env`
+- Mongoose handles schema and queries
 
 ---
 
@@ -456,9 +461,10 @@ npm run build
 - **UI Library:** https://tailwindcss.com
 - **Charts:** https://recharts.org
 - **Backend:** https://expressjs.com
-- **Database:** https://github.com/WiseLibs/better-sqlite3
+- **Database ODM:** https://mongoosejs.com
+- **Database:** https://www.mongodb.com
 - **TypeScript:** https://www.typescriptlang.org
 
 ---
 
-**Last Updated:** 2026-07-10
+**Last Updated:** July 11, 2026

@@ -3,21 +3,20 @@
 ## Prerequisites
 - Node.js 16+ installed
 - npm (comes with Node.js)
+- MongoDB running locally or MongoDB Atlas connection string
 
 ## Step-by-Step Setup
 
 ### Terminal 1: Start the Backend
 
 ```bash
-cd backend
-npm install
 npm start
 ```
 
 You should see:
 ```
 🚀 Server running at http://localhost:5000
-📚 Paper Tracker API ready!
+Connected to MongoDB
 ```
 
 **✅ Backend is running on port 5000**
@@ -96,9 +95,9 @@ You should see the Research Paper Tracker dashboard!
 After setup, check these files exist:
 
 **Backend:**
-- `backend/server.js` - Main server
-- `backend/database.js` - Database setup
-- `backend/research_papers.db` - SQLite database (created on first run)
+- `server.js` - Main server
+- `database.js` - Database setup
+- `package.json` - Dependencies
 
 **Frontend:**
 - `frontend/src/App.tsx` - Main app component
@@ -111,17 +110,8 @@ After setup, check these files exist:
 
 ### Backend won't start?
 ```bash
-# Make sure you're in the backend directory
-cd backend
-
-# Delete old database
-rm research_papers.db
-
-# Reinstall dependencies
-rm -rf node_modules
-npm install
-
-# Try again
+# Make sure MongoDB is running and MONGODB_URI is set in .env
+# Check the error message for details
 npm start
 ```
 
