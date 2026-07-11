@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const frontendDistPath = join(__dirname,'./frontend/dist');
+const frontendDistPath = join(__dirname,'frontend','dist');
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
@@ -167,7 +167,9 @@ app.get('/api/health', (req, res) => {
 // Serve the SPA entry point for all non-API routes
 app.get('*', async (req, res) => {
   try {
-    res.sendFile(join(frontendDistPath, 'index.html'));
+    console.log(frontendDistPath);
+    const html = await readFile(join(frontendDistPath, 'index.html'), 'utf-8');
+    res.type('html').send(html);
   } catch (error) {
     res.status(404).send('Error in frontend path');
   }
