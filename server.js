@@ -8,7 +8,7 @@ import { connectDatabase, Paper } from './database.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 const frontendDistPath = join(__dirname,'frontend','dist');
 

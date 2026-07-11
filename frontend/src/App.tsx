@@ -57,8 +57,7 @@ export const App: React.FC = () => {
       {!serverOnline && !loading && (
         <div className="bg-red-50 border-b border-red-200 px-4 py-3">
           <p className="text-red-800 text-sm font-medium">
-            Backend server is not running. Make sure to start the backend on
-            port 5000.
+            Backend server is not running. Make sure to start the backend.
           </p>
         </div>
       )}
