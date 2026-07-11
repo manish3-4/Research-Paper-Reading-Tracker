@@ -12,7 +12,12 @@ const PORT = process.env.PORT || 10000;
 
 const frontendDistPath = join(__dirname,'frontend','dist');
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 app.listen(PORT, () => {
