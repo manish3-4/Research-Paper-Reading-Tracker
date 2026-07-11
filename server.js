@@ -26,6 +26,19 @@ app.use(express.static(frontendDistPath));
 //connection database
 await connectDatabase();
 
+// app.get('*', async (req, res) => {
+//   try {
+//     console.log(frontendDistPath);
+//     const html = await readFile(join(frontendDistPath, 'index.html'), 'utf-8');
+//     res.type('html').send(html);
+//   } catch (error) {
+//     res.status(404).send('Error in frontend path');
+//   }
+// });
+
+app.get("*", async (req, res) => {
+  res.sendFile(join(frontendDistPath, "index.html"));
+});
 
 app.get('/api/papers', async (req, res) => {
   try {
@@ -165,13 +178,4 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve the SPA entry point for all non-API routes
-app.get('*', async (req, res) => {
-  try {
-    console.log(frontendDistPath);
-    const html = await readFile(join(frontendDistPath, 'index.html'), 'utf-8');
-    res.type('html').send(html);
-  } catch (error) {
-    res.status(404).send('Error in frontend path');
-  }
-});
 
