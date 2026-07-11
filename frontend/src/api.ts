@@ -1,6 +1,6 @@
 import { ResearchPaper, AnalyticsSummary, FunnelDataPoint, ScatterDataPoint, StackedBarDataPoint } from './types';
 
-const API_BASE = 'http://localhost:10000/api';
+const API_BASE = '/api';
 
 // Papers endpoints
 export async function fetchPapers(): Promise<ResearchPaper[]> {
