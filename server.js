@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const frontendDistPath = join(__dirname,'frontend','dist');
+const frontendDistPath = join(__dirname,'dist');
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
