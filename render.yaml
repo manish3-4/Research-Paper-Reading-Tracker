@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: paper-tracker
+    runtime: node
+    plan: free
+    buildCommand: npm install --prefix frontend && npm run build --prefix frontend && npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: PORT
+        value: 10000

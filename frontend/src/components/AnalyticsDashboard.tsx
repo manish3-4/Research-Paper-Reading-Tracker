@@ -249,7 +249,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ papers }
                 tickFormatter={(value) => impactScoreLabels[value]}
                 stroke="#64748b"
                 label={{
-                  value: "Impact Score",
+                  value: "",
                   angle: -90,
                   position: "insideLeft",
                 }}
